@@ -18,6 +18,8 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -29,22 +31,30 @@ public class TodoBusinessImplMockitoInjectMockTest {
 
 	@Mock
 	TodoService todoServiceMock;
+
+	@InjectMocks
+	TodoBusinessImpl todoBusinessImpl;
+	// Seria como se tivesse feito o seguinte:
+	// TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
+	// o InjectMocks cria uma instancia de uma classe e injeta os mocks que foram criados com o @mock
+
+//	@Mock creates a mock. @InjectMocks creates an instance of the class and injects 
+//	the mocks that are created with the @Mock (or @Spy) annotations into this instance.
 	
+	@Captor
+	ArgumentCaptor<String> stringArgumentCaptor;
+	//Seria mais ou menos igual ao que foi implementado sem a anotação:
+	//ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+
 	@Test
 	public void testRetrieveTodosRelatedToSpring_usingAMock() {
 
-		TodoService todoServiceMock = mock(TodoService.class);
-
+		
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
-		// Quando eu ir no metodo retrieveTodos com a string DUMMY eu retorno essa lista
-		// acima
 		when(todoServiceMock.retrieveTodos("Dummy")).thenReturn(todos);
 
-		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
-
-		// Como aqui eu utilizei a string DUMMY ela vai ativar o trigger para retornar
-		// aquela lista acima
+		
 		List<String> filteredTodos = todoBusinessImpl.retrieveTodosRelatedToSpring("Dummy");
 
 		for (String t : filteredTodos) {
@@ -58,21 +68,17 @@ public class TodoBusinessImplMockitoInjectMockTest {
 
 		// Given - Setup
 
-
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
-		// Podemos usar o given e o willReturn no lugar do when e thenReturn quando
-		// vamos usar o padrão do BDD
+		
 		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
 
-		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
 		// When - Specific action
 
 		List<String> filteredTodos = todoBusinessImpl.retrieveTodosRelatedToSpring("Dummy");
 
 		// Then
-		// O assertThat pode ser usado no lugar do assertEquals , dependendo pode deixar
-		// o codigo mais claro
+	
 		assertThat(filteredTodos.size(), is(2));
 	}
 
@@ -81,24 +87,17 @@ public class TodoBusinessImplMockitoInjectMockTest {
 
 		// Given - Setup
 
-		
-
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
 		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
 
-		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
 
 		// When - Specific action
 
 		todoBusinessImpl.deleteTodosNotRelatedToSpring("Dummy");
 
 		// Then
-		// Nós sabemos que a unica string que não esta relacionada com Spring é a ultima
-		// (learn to Danceee)
-		// Então aqui temos que colocar a logica para verificar se o metodo foi chamado
-		// para ela, é aqui que o verify entra em ação
-
+		
 		// Verifica se o metodo deleteTodo foi chamado para a string learn to dancee
 		verify(todoServiceMock).deleteTodo("Learn to Danceee");
 
@@ -119,18 +118,13 @@ public class TodoBusinessImplMockitoInjectMockTest {
 	@Test
 	public void testDeleteTodosNotRelatedToSpring_usingBDD_withArgumentCapture() {
 
-		// Declaring the argument captor
-		ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
-		
-		
-
+	
 		// Given - Setup
 
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
 		given(todoServiceMock.retrieveTodos("Dummy")).willReturn(todos);
 
-		TodoBusinessImpl todoBusinessImpl = new TodoBusinessImpl(todoServiceMock);
 
 		// When - Specific action
 
@@ -140,10 +134,10 @@ public class TodoBusinessImplMockitoInjectMockTest {
 
 		// Verifica se o metodo deleteTodo foi chamado para a string learn to dancee
 		verify(todoServiceMock).deleteTodo(stringArgumentCaptor.capture());
-		
-		
-		//Aqui é verificado se na chamada do metodo deleteTodo o parametro passado foi Learn to Danceee
-		assertThat(stringArgumentCaptor.getValue(),is("Learn to Danceee"));
+
+		// Aqui é verificado se na chamada do metodo deleteTodo o parametro passado foi
+		// Learn to Danceee
+		assertThat(stringArgumentCaptor.getValue(), is("Learn to Danceee"));
 
 	}
 }
