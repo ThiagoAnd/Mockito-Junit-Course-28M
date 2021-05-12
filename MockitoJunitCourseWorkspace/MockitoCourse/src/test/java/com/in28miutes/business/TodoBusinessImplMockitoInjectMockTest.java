@@ -16,14 +16,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.in28minutes.business.TodoBusinessImpl;
 import com.in28minutes.data.api.TodoService;
 
-public class TodoBusinessImplMockTest {
+@RunWith(MockitoJUnitRunner.class)
+public class TodoBusinessImplMockitoInjectMockTest {
 
-	// Um mock é muito dinamico, não é hard-coded
+	@Mock
+	TodoService todoServiceMock;
+	
 	@Test
 	public void testRetrieveTodosRelatedToSpring_usingAMock() {
 
@@ -52,7 +58,6 @@ public class TodoBusinessImplMockTest {
 
 		// Given - Setup
 
-		TodoService todoServiceMock = mock(TodoService.class);
 
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
@@ -76,7 +81,7 @@ public class TodoBusinessImplMockTest {
 
 		// Given - Setup
 
-		TodoService todoServiceMock = mock(TodoService.class);
+		
 
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 
@@ -120,8 +125,6 @@ public class TodoBusinessImplMockTest {
 		
 
 		// Given - Setup
-
-		TodoService todoServiceMock = mock(TodoService.class);
 
 		List<String> todos = Arrays.asList("Learn Spring MVC", "Learn the Spring", "Learn to Danceee");
 

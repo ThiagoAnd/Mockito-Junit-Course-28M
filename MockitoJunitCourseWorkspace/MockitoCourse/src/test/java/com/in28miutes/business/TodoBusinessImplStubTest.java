@@ -20,9 +20,7 @@ public class TodoBusinessImplStubTest {
 		
 		List<String> filteredTodos = todoBusinessImpl.retrieveTodosRelatedToSpring("Spring");
 		
-		for(String t: filteredTodos) {
-			System.out.println(t);
-		}
+	
 		assertEquals(2,filteredTodos.size());
 	}
 
